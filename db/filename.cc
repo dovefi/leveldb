@@ -108,6 +108,7 @@ bool ParseFileName(const std::string& filename, uint64_t* number,
     Slice suffix = rest;
     if (suffix == Slice(".log")) {
       *type = kLogFile;
+      // .sst 跟 .ldb 文件都是用来存储数据的应该是官方想换后缀吧
     } else if (suffix == Slice(".sst") || suffix == Slice(".ldb")) {
       *type = kTableFile;
     } else if (suffix == Slice(".dbtmp")) {

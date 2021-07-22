@@ -23,6 +23,7 @@ struct ReadOptions;
 class BlockHandle {
  public:
   // Maximum encoding length of a BlockHandle
+  // BlockHandle 最长的为20字节
   enum { kMaxEncodedLength = 10 + 10 };
 
   BlockHandle();
@@ -39,7 +40,7 @@ class BlockHandle {
   Status DecodeFrom(Slice* input);
 
  private:
-  uint64_t offset_;
+  uint64_t offset_; // 之前使用的是varint64 边长编码，最多10字节，这里改变后直接固定为8字节了
   uint64_t size_;
 };
 
@@ -50,6 +51,10 @@ class Footer {
   // Encoded length of a Footer.  Note that the serialization of a
   // Footer will always occupy exactly this many bytes.  It consists
   // of two block handles and a magic number.
+  // Footer 是固定的48字节大小，其中包含2个block handles分别指向
+  // meta index block 跟 index block，还有一个magic number 存校验码
+  // 旧版本中还包含一个padding字段，但是当前的block handle是固定大小的额，
+  // 所以这里可以去掉了
   enum { kEncodedLength = 2 * BlockHandle::kMaxEncodedLength + 8 };
 
   Footer() = default;
